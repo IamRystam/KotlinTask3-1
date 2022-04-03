@@ -1,41 +1,46 @@
-val secondsInMinuts = 60
-val secondsInHours = 60*60*60
-val secondsInDays = 60*60*60*24
+const val secondsInMinute = 60
+const val secondsInHour = 3_600
+const val secondsInDay = 86_400
 
-fun main(){
+fun main() {
     println("Введите количество секунд")
     val timeInSeconds = readLine()?.toInt() ?: return
     agoToText(timeInSeconds)
 }
 
-fun agoToText(timeInSeconds:Int) {
+fun agoToText(timeInSeconds: Int) {
 
-    val timeInMinuts = timeInSeconds / secondsInMinuts
-    val timeInHour = timeInSeconds/secondsInHours
-    val timeM:String
-    val timeH:String
+    val timeInMinutes = timeInSeconds / secondsInMinute
+    val timeInHour = timeInSeconds / secondsInHour
 
-    when {
-        ((timeInMinuts % 10 == 1) && (timeInMinuts != 11)) -> timeM ="минуту"
-        ((timeInMinuts % 10 == 2) && (timeInMinuts != 12)) -> timeM ="минуты"
-        ((timeInMinuts % 10 == 3) && (timeInMinuts != 13)) -> timeM ="минуты"
-        ((timeInMinuts % 10 == 4) && (timeInMinuts != 14)) -> timeM ="минуты"
-        else -> timeM = "минут"
-    }
-    when {
-        ((timeInHour % 10 == 1) && (timeInHour != 11)) -> timeH ="час"
-        ((timeInHour % 10 == 2) && (timeInHour != 12)) -> timeH ="часа"
-        ((timeInHour % 10 == 3) && (timeInHour != 13)) -> timeH ="часа"
-        ((timeInHour % 10 == 4) && (timeInHour != 14)) -> timeH ="часа"
-        else -> timeH = "часов"
+    val timeIn = if (timeInSeconds in (secondsInMinute + 1)..secondsInHour) timeInMinutes else timeInHour
+
+    val time = when {
+        timeIn % 10 == 1 && timeIn != 11 -> 1
+        timeIn % 10 in 2..4 && timeIn !in 12..14 -> 2
+        else -> 3
     }
 
+    val time3: String = when (time) {
+        1 -> if (timeInSeconds in (secondsInMinute + 1) until secondsInHour) "минуту"
+        else if (timeInSeconds in (secondsInHour + 1)..secondsInDay) "час"
+        else " "
+        2 -> if (timeInSeconds > secondsInMinute + 1 && timeInSeconds <= secondsInHour) "минуты"
+        else if (timeInSeconds in (secondsInHour + 1)..secondsInDay) "часа"
+        else " "
+        3 -> if (timeInSeconds > secondsInMinute + 1 && timeInSeconds <= secondsInHour) "минут"
+        else if (timeInSeconds in (secondsInHour + 1)..secondsInDay) "часов"
+        else " "
+
+        else -> " "
+    }
     when (timeInSeconds) {
-        in 0..secondsInMinuts -> println( "Был в сети только что")
-        in secondsInMinuts + 1..secondsInHours ->  println("Был в сети $timeInMinuts $timeM назад")
-        in secondsInHours + 1.. secondsInDays -> println( "Был в сети $timeInHour $timeH назад")
-        in secondsInDays + 1..secondsInDays * 2 -> println( "Был в сети сегодня")
-        in (secondsInDays * 2) + 1..secondsInDays * 3 -> println("Был в сети вчера")
+        in 0..secondsInMinute -> println("Был в сети только что")
+        in secondsInMinute + 1..secondsInHour -> println("Был в сети $timeInMinutes $time3 назад")
+        in secondsInHour + 1..secondsInDay -> println("Был в сети $timeInHour $time3 назад")
+        in secondsInDay + 1..secondsInDay * 2 -> println("Был в сети сегодня")
+        in (secondsInDay * 2) + 1..secondsInDay * 3 -> println("Был в сети вчера")
         else -> println("Был в сети давно")
     }
 }
+
