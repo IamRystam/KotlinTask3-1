@@ -1,45 +1,44 @@
-const val secondsInMinute = 60
-const val secondsInHour = 3_600
-const val secondsInDay = 86_400
-
+const val SECONDS_IN_MINUTE = 60
+const val SECONDS_IN_HOUR = 3_600
+const val SECONDS_IN_DAY = 86_400
 fun main() {
     println("Введите количество секунд")
-    val timeInSeconds = readLine()?.toInt() ?: return
-    agoToText(timeInSeconds)
+    val amount = readln().toInt()
+    println("Введите one")
+    val one = readln().toString()
+    println("Введите few")
+    val few = readln().toString()
+    println("Введите many")
+    val many = readln().toString()
+
+
+    amountInString(amount = amount, one = one, few = few, many = many)
+    agoToText(amount, one, few, many)
 }
 
-fun agoToText(timeInSeconds: Int) {
-
-    val timeInMinutes = timeInSeconds / secondsInMinute
-    val timeInHour = timeInSeconds / secondsInHour
-
-    val timeIn = if (timeInSeconds in (secondsInMinute + 1)..secondsInHour) timeInMinutes else timeInHour
+fun amountInString(amount: Int, one: String, few: String, many: String): String {
 
     val time = when {
-        timeIn % 10 == 1 && timeIn != 11 -> 1
-        timeIn % 10 in 2..4 && timeIn !in 12..14 -> 2
-        else -> 3
+        amount % 10 == 1 && amount != 11 -> one
+        amount % 10 in 2..4 && amount !in 12..14 -> few
+        else -> many
     }
 
-    val time3: String = when (time) {
-        1 -> if (timeInSeconds in (secondsInMinute + 1) until secondsInHour) "минуту"
-        else if (timeInSeconds in (secondsInHour + 1)..secondsInDay) "час"
-        else " "
-        2 -> if (timeInSeconds > secondsInMinute + 1 && timeInSeconds <= secondsInHour) "минуты"
-        else if (timeInSeconds in (secondsInHour + 1)..secondsInDay) "часа"
-        else " "
-        3 -> if (timeInSeconds > secondsInMinute + 1 && timeInSeconds <= secondsInHour) "минут"
-        else if (timeInSeconds in (secondsInHour + 1)..secondsInDay) "часов"
-        else " "
+    return time
+}
 
-        else -> " "
-    }
-    when (timeInSeconds) {
-        in 0..secondsInMinute -> println("Был в сети только что")
-        in secondsInMinute + 1..secondsInHour -> println("Был в сети $timeInMinutes $time3 назад")
-        in secondsInHour + 1..secondsInDay -> println("Был в сети $timeInHour $time3 назад")
-        in secondsInDay + 1..secondsInDay * 2 -> println("Был в сети сегодня")
-        in (secondsInDay * 2) + 1..secondsInDay * 3 -> println("Был в сети вчера")
+fun agoToText(amount: Int, one: String, few: String, many: String) {
+    val timeInMinutes = amount / SECONDS_IN_MINUTE
+    val timeInHour = amount / SECONDS_IN_HOUR
+
+
+    val time = amountInString(amount, one, few, many)
+    when (amount) {
+        in 0..SECONDS_IN_MINUTE -> println("Был в сети только что")
+        in SECONDS_IN_MINUTE + 1..SECONDS_IN_HOUR -> println("Был в сети $timeInMinutes $time назад")
+        in SECONDS_IN_HOUR + 1..SECONDS_IN_DAY -> println("Был в сети $timeInHour $time назад")
+        in SECONDS_IN_DAY + 1..SECONDS_IN_DAY * 2 -> println("Был в сети сегодня")
+        in (SECONDS_IN_DAY * 2) + 1..SECONDS_IN_DAY * 3 -> println("Был в сети вчера")
         else -> println("Был в сети давно")
     }
 }
